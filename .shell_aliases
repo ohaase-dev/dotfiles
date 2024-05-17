@@ -1,0 +1,5 @@
+# some more ls aliases
+alias ls='ls --color'
+alias ll='ls -aAlh'
+alias vim='nvim'
+alias c='clear'
