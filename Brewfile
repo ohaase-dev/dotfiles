@@ -89,6 +89,7 @@ brew little-cms2
 brew lua
 brew lz4
 brew lzo
+brew mas
 brew mbedtls
 brew mpdecimal
 brew mpfr
@@ -133,6 +134,7 @@ brew tbb
 brew terraform
 brew tesseract
 brew theora
+brew tree
 brew unbound
 brew webp
 brew x264
@@ -201,6 +203,8 @@ cask visual-studio-code
 cask vlc
 cask whatsize
 cask wifi-explorer-pro
+
+tap homebrew/bundle
 
 tap homebrew/cask-fonts
 
