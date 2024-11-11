@@ -33,6 +33,7 @@
 
       users.users.olafhaase.home = "/Users/olafhaase";
       home-manager.backupFileExtension = "backup";
+      ids.gids.nixbld = 350;
       nix.configureBuildUsers = true;
       nix.useDaemon = true;
 
