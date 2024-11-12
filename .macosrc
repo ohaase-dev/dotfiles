@@ -21,6 +21,8 @@ source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 # # Added by Toolbox App
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
+# dotnet
+#export PATH="$PATH:$HOME/.dotnet"
   
 if command -v ngrok &>/dev/null; then
   eval "$(ngrok completion)"

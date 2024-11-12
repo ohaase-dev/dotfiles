@@ -5,11 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# macos stuff
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  source ${HOME}/.macosrc
-fi
-
 # Set the directory we want to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
@@ -39,6 +34,12 @@ zinit snippet OMZP::azure
 zinit snippet OMZP::kubectl
 zinit snippet OMZP::kubectx
 zinit snippet OMZP::command-not-found
+
+# Activate ngrok completions
+if command -v ngrok &>/dev/null; then
+  eval "$(ngrok completion)"
+fi
+
 
 # Load completions
 autoload -Uz compinit && compinit
@@ -74,6 +75,7 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
+
 # Aliases
 if [ -f ~/.shell_aliases ]; then
     source ~/.shell_aliases
@@ -85,4 +87,9 @@ if type fzf &>/dev/null; then
 fi
 if type zoxide &>/dev/null; then
   eval "$(zoxide init --cmd cd zsh)"
+fi
+
+# macos stuff
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  source ~/.macosrc
 fi
