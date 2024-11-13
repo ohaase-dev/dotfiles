@@ -30,7 +30,7 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle }:
   let
-    configuration = { pkgs, ... }: {
+    configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;
 
       # List packages installed in system profile. To search by name, run:
@@ -44,6 +44,9 @@
           pkgs.kubectx
           pkgs._1password-gui
           pkgs._1password-cli
+          pkgs.vscode
+          pkgs.jetbrains.rider
+          pkgs.jetbrains.datagrip
 #          pkgs.direnv
 #          pkgs.sshs
 #          pkgs.glow
@@ -110,6 +113,9 @@
       homebrew.enable = true;
       homebrew.casks = [
         "intune-company-portal"
+        "microsoft-edge"
+        "microsoft-teams"
+        "microsoft-office"
       ];
       homebrew.brews = [
         "mas"
