@@ -14,16 +14,24 @@
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
   let
     configuration = { pkgs, ... }: {
+      nixpkgs.config.allowUnfree = true;
+
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
         [ 
 #          pkgs.nushell
+          pkgs.git
           pkgs.vim
+          pkgs.k9s
+          pkgs.kubectx
+          pkgs._1password-gui
+          pkgs._1password-cli
 #          pkgs.direnv
 #          pkgs.sshs
 #          pkgs.glow
         ];
+
       services.nix-daemon.enable = true;
       nix.settings.experimental-features = "nix-command flakes";
       programs.zsh.enable = true;  # default shell on catalina
@@ -64,11 +72,10 @@
       # Homebrew needs to be installed on its own!
       homebrew.enable = true;
       homebrew.casks = [
-#	            "wireshark"
-#              "google-chrome"
+        "intune-company-portal"
       ];
       homebrew.brews = [
-#	      "imagemagick"
+        "mas"
       ];
     };
   in
@@ -85,7 +92,18 @@
       ];
     };
 
+    darwinConfigurations."BF00223" = nix-darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      modules = [ 
+	configuration
+        home-manager.darwinModules.home-manager {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.olafhaase = import ./home.nix;
+        }
+      ];
+    };
     # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."Olafs-MacBook-Air".pkgs;
+    darwinPackages = self.darwinConfigurations."BF00223".pkgs;
   };
 }
