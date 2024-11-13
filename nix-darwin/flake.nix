@@ -18,6 +18,7 @@
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
         [ 
+#          pkgs.nushell
           pkgs.vim
 #          pkgs.direnv
 #          pkgs.sshs
@@ -31,7 +32,17 @@
       nixpkgs.hostPlatform = "aarch64-darwin";
       security.pam.enableSudoTouchIdAuth = true;
 
-      users.users.olafhaase.home = "/Users/olafhaase";
+      #fonts.fontconfig.enable = true;
+      fonts.packages = with pkgs; [
+        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      ];
+
+      users.users.olafhaase ={
+          home = "/Users/olafhaase";
+          shell = pkgs.nushell;
+      };
+
+
       home-manager.backupFileExtension = "backup";
       ids.gids.nixbld = 350;
       nix.configureBuildUsers = true;
@@ -40,6 +51,9 @@
       system.defaults = {
         dock.autohide = true;
         dock.mru-spaces = false;
+        dock.expose-animation-duration = 0.0;
+        dock.autohide-delay = 0.0;
+        dock.autohide-time-modifier = 0.0;
         finder.AppleShowAllExtensions = true;
         finder.FXPreferredViewStyle = "clmv";
         #loginwindow.LoginwindowText = "devops-toolbox";
