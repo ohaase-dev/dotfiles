@@ -152,6 +152,38 @@
         "type": "github"
       }
     },
+    "homebrew-dotnet-sdks": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1731522569,
+        "narHash": "sha256-5cOilP60mN4TN5t1onye8MEgGadokIQucvN/OXGBuqY=",
+        "owner": "isen-ng",
+        "repo": "homebrew-dotnet-sdk-versions",
+        "rev": "d72a1f84ac4d11d401eccacb60215b86ef1e0043",
+        "type": "github"
+      },
+      "original": {
+        "owner": "isen-ng",
+        "repo": "homebrew-dotnet-sdk-versions",
+        "type": "github"
+      }
+    },
+    "homebrew-ohtap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1731584127,
+        "narHash": "sha256-fLL1GFFG8i3JBYM9EXgqm1MsbqoraGTFlCzpK7V6oKI=",
+        "owner": "ohaase-dev",
+        "repo": "homebrew-ohtap",
+        "rev": "277d207c2cdfa361f046f238ac0714e0dbdd667c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ohaase-dev",
+        "repo": "homebrew-ohtap",
+        "type": "github"
+      }
+    },
     "mac-app-util": {
       "inputs": {
         "cl-nix-lite": "cl-nix-lite",
@@ -299,6 +331,8 @@
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
+        "homebrew-dotnet-sdks": "homebrew-dotnet-sdks",
+        "homebrew-ohtap": "homebrew-ohtap",
         "mac-app-util": "mac-app-util",
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",

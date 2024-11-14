@@ -26,10 +26,17 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
-
+    homebrew-dotnet-sdks = {
+      url = "github:isen-ng/homebrew-dotnet-sdk-versions";
+      flake = false;
+    };
+    homebrew-ohtap = {
+      url = "github:ohaase-dev/homebrew-ohtap";
+      flake = false;
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, mac-app-util, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, mac-app-util, nix-homebrew, homebrew-core,  homebrew-cask, homebrew-bundle, homebrew-dotnet-sdks, homebrew-ohtap }:
   let
     configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;
@@ -39,16 +46,21 @@
       environment.systemPackages =
         [ 
 #          pkgs.nushell
-          pkgs.gitFull
-#          pkgs.git
-#          pkgs.git-credential-manager
+          # pkgs.gitFull
+          pkgs.git
+          pkgs.git-credential-manager
           pkgs.vim
           pkgs.k9s
-          pkgs.kubectx
+          #pkgs.kubectx
           pkgs.vscode
           pkgs.jetbrains.rider
           pkgs.jetbrains.datagrip
           pkgs.wezterm
+          pkgs.kubectl
+          pkgs.kubeswitch
+          pkgs.kubelogin
+          pkgs.kubelogin-oidc
+          (pkgs.azure-cli.withExtensions [ pkgs.azure-cli.extensions.aks-preview ])
           # pkgs.dotnetCorePackages.sdk_6_0_1xx
           # pkgs.dotnetCorePackages.dotnet_8.sdk
           # pkgs.dotnetCorePackages.dotnet_9.sdk
@@ -56,7 +68,6 @@
 #          pkgs.sshs
 #          pkgs.glow
         ];
-
       # system.activationScripts.applications.text = let
       #   env = pkgs.buildEnv {
       #     name = "system-applications";
@@ -124,12 +135,19 @@
           "microsoft-office"
           "1password"
           "1password-cli"
+          "obsidian"
+          "orbstack"
+          "dotnet-sdk9"
+          "dotnet-sdk8"
+          "dotnet-sdk6"
+          "switchbar"
         ];
         brews = [
           "mas"
         ];
         masApps = {
           OnePasswordSafari = 1569813296;
+          Greenshot = 1103915944;
         };
       };
     };
@@ -183,6 +201,8 @@
               "homebrew/homebrew-core" = homebrew-core;
               "homebrew/homebrew-cask" = homebrew-cask;
               "homebrew/homebrew-bundle" = homebrew-bundle;
+              "isen-ng/homebrew-dotnet-sdks" =  homebrew-dotnet-sdks;
+              "ohaase-dev/homebrew-ohtap" =  homebrew-ohtap;
             };
 
             # Optional: Enable fully-declarative tap management

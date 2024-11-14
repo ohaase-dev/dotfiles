@@ -39,6 +39,7 @@
   home.sessionPath = [
     "/run/current-system/sw/bin"
       "$HOME/.nix-profile/bin"
+      "/usr/local/share/dotnet"
   ];
 
   # # Need to create aliases because Launchbar doesn't look through symlinks.
