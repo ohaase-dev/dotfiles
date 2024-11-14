@@ -55,12 +55,14 @@
           pkgs.vscode
           pkgs.jetbrains.rider
           pkgs.jetbrains.datagrip
+          pkgs.jetbrains.gateway
           pkgs.wezterm
           pkgs.kubectl
           pkgs.kubeswitch
           pkgs.kubelogin
           pkgs.kubelogin-oidc
-          (pkgs.azure-cli.withExtensions [ pkgs.azure-cli.extensions.aks-preview ])
+          #(pkgs.azure-cli.withExtensions [ pkgs.azure-cli.extensions.aks-preview ])
+          pkgs.flameshot
           # pkgs.dotnetCorePackages.sdk_6_0_1xx
           # pkgs.dotnetCorePackages.dotnet_8.sdk
           # pkgs.dotnetCorePackages.dotnet_9.sdk
@@ -141,6 +143,8 @@
           "dotnet-sdk8"
           "dotnet-sdk6"
           "switchbar"
+          "omnidisksweeper"
+          "commander-one"
         ];
         brews = [
           "mas"
@@ -148,6 +152,8 @@
         masApps = {
           OnePasswordSafari = 1569813296;
           Greenshot = 1103915944;
+          Whatsapp = 310633997;
+          BlackmagicDiskSpeedTest = 425264550;
         };
       };
     };
