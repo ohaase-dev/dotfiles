@@ -1,7 +1,7 @@
 # home.nix
 # home-manager switch 
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.username = "olafhaase";
@@ -12,10 +12,10 @@
 # Makes sense for user specific applications that shouldn't be available system-wide
   home.packages = [
           #pkgs.skim
-          pkgs.wezterm
-          pkgs.starship
-          pkgs.nushellPlugins.query
-          pkgs.nushellPlugins.skim
+          #pkgs.wezterm
+          #pkgs.starship
+          #pkgs.nushellPlugins.query
+          #pkgs.nushellPlugins.skim
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -40,6 +40,21 @@
     "/run/current-system/sw/bin"
       "$HOME/.nix-profile/bin"
   ];
+
+  # # Need to create aliases because Launchbar doesn't look through symlinks.
+  # home.activation.link-apps = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  #   new_nix_apps="${config.home.homeDirectory}/Applications/Nix"
+  #   rm -rf "$new_nix_apps"
+  #   mkdir -p "$new_nix_apps"
+  #   find -H -L "$genProfilePath/home-files/Applications" -name "*.app" -type d -print | while read -r app; do
+  #     real_app=$(readlink -f "$app")
+  #     app_name=$(basename "$app")
+  #     target_app="$new_nix_apps/$app_name"
+  #     echo "Alias '$real_app' to '$target_app'"
+  #     ${pkgs.mkalias}/bin/mkalias "$real_app" "$target_app"
+  #   done
+  # '';
+
   programs.home-manager.enable = true;
 
   programs.nushell = {
@@ -71,7 +86,7 @@
   programs.skim.enable = true;
 
   programs.zsh = {
-    enable = false;
+    enable = true;
     initExtra = ''
       # Add any additional configurations here
       export PATH=/run/current-system/sw/bin:$HOME/.nix-profile/bin:$PATH
@@ -90,6 +105,16 @@
          error_symbol = "[➜](bold red)";
        };
     };
+  };
+
+    programs.git = {
+    enable = true;
+    userName  = "Olaf Haase";
+    userEmail = "olaf.haase@bob.ch";
+    extraConfig.credential.helper = "manager";
+    extraConfig.credential."https://dev.azure.com".usehttppath = "true";
+    extraConfig.credential."https://github.com".username = "ohaase-dev";
+    extraConfig.credential.credentialStore = "cache";
   };
 
 }

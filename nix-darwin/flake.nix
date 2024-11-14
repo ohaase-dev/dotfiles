@@ -10,6 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    mac-app-util.url = "github:hraban/mac-app-util";
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
     # Optional: Declarative tap management
@@ -28,7 +29,7 @@
 
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, mac-app-util, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle }:
   let
     configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;
@@ -38,39 +39,43 @@
       environment.systemPackages =
         [ 
 #          pkgs.nushell
-          pkgs.git
+          pkgs.gitFull
+#          pkgs.git
+#          pkgs.git-credential-manager
           pkgs.vim
           pkgs.k9s
           pkgs.kubectx
-          pkgs._1password-gui
-          pkgs._1password-cli
           pkgs.vscode
           pkgs.jetbrains.rider
           pkgs.jetbrains.datagrip
+          pkgs.wezterm
+          # pkgs.dotnetCorePackages.sdk_6_0_1xx
+          # pkgs.dotnetCorePackages.dotnet_8.sdk
+          # pkgs.dotnetCorePackages.dotnet_9.sdk
 #          pkgs.direnv
 #          pkgs.sshs
 #          pkgs.glow
         ];
 
-      system.activationScripts.applications.text = let
-        env = pkgs.buildEnv {
-          name = "system-applications";
-          paths = config.environment.systemPackages;
-          pathsToLink = "/Applications";
-        };
-      in
-        pkgs.lib.mkForce ''
-          # Set up applications.
-          echo "setting up /Applications..." >&2
-          rm -rf /Applications/Nix\ Apps
-          mkdir -p /Applications/Nix\ Apps
-          find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
-          while read -r src; do
-            app_name=$(basename "$src")
-            echo "copying $src" >&2
-            ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
-          done
-        '';
+      # system.activationScripts.applications.text = let
+      #   env = pkgs.buildEnv {
+      #     name = "system-applications";
+      #     paths = config.environment.systemPackages;
+      #     pathsToLink = "/Applications";
+      #   };
+      # in
+      #   pkgs.lib.mkForce ''
+      #     # Set up applications.
+      #     echo "setting up /Applications..." >&2
+      #     rm -rf /Applications/Nix\ Apps
+      #     mkdir -p /Applications/Nix\ Apps
+      #     find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
+      #     while read -r src; do
+      #       app_name=$(basename "$src")
+      #       echo "copying $src" >&2
+      #       ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
+      #     done
+      #   '';
 
       services.nix-daemon.enable = true;
       nix.settings.experimental-features = "nix-command flakes";
@@ -110,16 +115,23 @@
       };
 
       # Homebrew needs to be installed on its own!
-      homebrew.enable = true;
-      homebrew.casks = [
-        "intune-company-portal"
-        "microsoft-edge"
-        "microsoft-teams"
-        "microsoft-office"
-      ];
-      homebrew.brews = [
-        "mas"
-      ];
+      homebrew = {
+        enable = true;
+        casks = [
+          "intune-company-portal"
+          "microsoft-edge"
+          "microsoft-teams"
+          "microsoft-office"
+          "1password"
+          "1password-cli"
+        ];
+        brews = [
+          "mas"
+        ];
+        masApps = {
+          OnePasswordSafari = 1569813296;
+        };
+      };
     };
   in
   {
@@ -127,10 +139,15 @@
       system = "aarch64-darwin";
       modules = [ 
 	      configuration
+        mac-app-util.darwinModules.default
         home-manager.darwinModules.home-manager {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.olafhaase = import ./home.nix;
+          # To enable it for all users:
+          home-manager.sharedModules = [
+            mac-app-util.homeManagerModules.default
+          ];
         }
       ];
     };
@@ -139,10 +156,15 @@
       system = "aarch64-darwin";
       modules = [ 
 	      configuration
+        mac-app-util.darwinModules.default
         home-manager.darwinModules.home-manager {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.olafhaase = import ./home.nix;
+          # To enable it for all users:
+          home-manager.sharedModules = [
+            mac-app-util.homeManagerModules.default
+          ];
         }
         nix-homebrew.darwinModules.nix-homebrew
         {
