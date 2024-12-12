@@ -24,7 +24,7 @@
 #    ".zshrc".source = ~/dotfiles/zshrc/.zshrc;
 #    ".config/wezterm".source = ~/dotfiles/wezterm;
 #    ".config/skhd".source = ~/dotfiles/skhd;
-#    ".config/starship".source = ~/dotfiles/starship;
+     ".config/starship.toml".source = ~/src/dotfiles/starship/starship.toml;
 #    ".config/zellij".source = ~/dotfiles/zellij;
 #    ".config/nvim".source = ~/dotfiles/nvim;
 #    ".config/nix".source = ~/dotfiles/nix;
@@ -70,7 +70,6 @@
     extraConfig = ''
       local wezterm = require 'wezterm'
       local config = wezterm.config_builder()
-      --config.color_scheme = "catppuccino-macchiato"
       config.color_scheme = "Catppuccin Mocha"
       config.front_end = "WebGpu"
       config.font_size = 15.0
@@ -79,6 +78,18 @@
       config.window_background_opacity = 1
       config.window_decorations = 'RESIZE'
       config.audible_bell = "Disabled"
+      config.keys = {
+        {
+          key = 'LeftArrow',
+          mods = 'OPT',
+          action = wezterm.action.SendKey { key = 'b', mods = 'ALT' }
+        },
+        {
+          key = 'RightArrow',
+          mods = 'OPT',
+          action = wezterm.action.SendKey { key = 'f', mods = 'ALT' }
+        }
+      }
 
       return config
     '';
@@ -99,13 +110,13 @@
   programs.starship = {
     enable = true;
     # theme = "minimal";
-    settings = {
-         add_newline = true;
-         character = { 
-         success_symbol = "[➜](bold green)";
-         error_symbol = "[➜](bold red)";
-       };
-    };
+    # settings = {
+    #      add_newline = true;
+    #      character = { 
+    #      success_symbol = "[➜](bold green)";
+    #      error_symbol = "[➜](bold red)";
+    #    };
+    # };
   };
 
     programs.git = {

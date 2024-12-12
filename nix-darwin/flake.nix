@@ -51,7 +51,7 @@
           pkgs.git-credential-manager
           pkgs.vim
           pkgs.k9s
-          #pkgs.kubectx
+          pkgs.kubectx
           pkgs.vscode
           pkgs.jetbrains.rider
           pkgs.jetbrains.datagrip
@@ -61,8 +61,9 @@
           pkgs.kubeswitch
           pkgs.kubelogin
           pkgs.kubelogin-oidc
-          #(pkgs.azure-cli.withExtensions [ pkgs.azure-cli.extensions.aks-preview ])
-          pkgs.flameshot
+          (pkgs.azure-cli.withExtensions [ pkgs.azure-cli.extensions.aks-preview ])
+          pkgs.nerd-fonts.jetbrains-mono
+          #pkgs.flameshot
           # pkgs.dotnetCorePackages.sdk_6_0_1xx
           # pkgs.dotnetCorePackages.dotnet_8.sdk
           # pkgs.dotnetCorePackages.dotnet_9.sdk
@@ -100,7 +101,8 @@
 
       #fonts.fontconfig.enable = true;
       fonts.packages = with pkgs; [
-        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+        nerd-fonts.jetbrains-mono
+        # (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       ];
 
       users.users.olafhaase ={
@@ -115,13 +117,25 @@
       nix.useDaemon = true;
 
       system.defaults = {
-        dock.autohide = true;
-        dock.mru-spaces = false;
-        dock.expose-animation-duration = 0.0;
-        dock.autohide-delay = 0.0;
-        dock.autohide-time-modifier = 0.0;
-        finder.AppleShowAllExtensions = true;
-        finder.FXPreferredViewStyle = "clmv";
+        alf.globalstate = 1;
+        dock = {
+          autohide = true;
+          mru-spaces = false;
+          expose-animation-duration = 0.0;
+          autohide-delay = 0.0;
+          autohide-time-modifier = 0.0;
+        };
+
+        finder = {
+          _FXShowPosixPathInTitle = true; # show full path in finder title
+          AppleShowAllExtensions = true; # show all file extensions
+          FXPreferredViewStyle = "clmv";
+          FXEnableExtensionChangeWarning = false; # disable warning when changing file extension
+          QuitMenuItem = true; # enable quit menu item
+          ShowPathbar = true; # show path bar
+          ShowStatusBar = true; # show status bar
+        };
+        
         #loginwindow.LoginwindowText = "devops-toolbox";
         screencapture.location = "~/Pictures/screenshots";
         #screensaver.askForPasswordDelay = 10;
@@ -145,6 +159,22 @@
           "switchbar"
           "omnidisksweeper"
           "commander-one"
+          "twingate"
+          "orcaslicer"
+          "maczip"
+          "brave-browser"
+          "discord"
+          "fork"
+          "autodesk-fusion"
+          "openwebstart"
+          "zoom"
+          "betterdisplay"
+          "royal-tsx"
+          "dbeaver-community"
+          "pgadmin4"
+          "adobe-acrobat-pro"
+          "netspot"
+          "balenaetcher"
         ];
         brews = [
           "mas"
@@ -154,6 +184,7 @@
           Greenshot = 1103915944;
           Whatsapp = 310633997;
           BlackmagicDiskSpeedTest = 425264550;
+          FileZillaPro = 1298486723;
         };
       };
     };
