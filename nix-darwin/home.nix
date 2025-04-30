@@ -24,7 +24,7 @@
 #    ".zshrc".source = ~/dotfiles/zshrc/.zshrc;
 #    ".config/wezterm".source = ~/dotfiles/wezterm;
 #    ".config/skhd".source = ~/dotfiles/skhd;
-     ".config/starship.toml".source = ~/src/dotfiles/starship/starship.toml;
+     ".config/starship.toml".source = ~/src/priv/dotfiles/starship/starship.toml;
 #    ".config/zellij".source = ~/dotfiles/zellij;
 #    ".config/nvim".source = ~/dotfiles/nvim;
 #    ".config/nix".source = ~/dotfiles/nix;
@@ -56,6 +56,11 @@
   #   done
   # '';
 
+  home.shellAliases = {
+    code = "code-insiders";
+    ll = "ls -alh";
+  };
+
   programs.home-manager.enable = true;
 
   programs.nushell = {
@@ -64,44 +69,48 @@
     # carapace.enableNushellIntegration = true;
   };
 
-  programs.wezterm = {
-    enable = true;
-    enableZshIntegration = true;
-    extraConfig = ''
-      local wezterm = require 'wezterm'
-      local config = wezterm.config_builder()
-      config.color_scheme = "Catppuccin Mocha"
-      config.front_end = "WebGpu"
-      config.font_size = 15.0
-      config.font = wezterm.font "JetBrains Mono"
-      config.macos_window_background_blur = 30
-      config.window_background_opacity = 1
-      config.window_decorations = 'RESIZE'
-      config.audible_bell = "Disabled"
-      config.keys = {
-        {
-          key = 'LeftArrow',
-          mods = 'OPT',
-          action = wezterm.action.SendKey { key = 'b', mods = 'ALT' }
-        },
-        {
-          key = 'RightArrow',
-          mods = 'OPT',
-          action = wezterm.action.SendKey { key = 'f', mods = 'ALT' }
-        }
-      }
+  # programs.wezterm = {
+  #   enable = true;
+  #   enableZshIntegration = true;
+  #   extraConfig = ''
+  #     local wezterm = require 'wezterm'
+  #     local config = wezterm.config_builder()
+  #     config.color_scheme = "Catppuccin Mocha"
+  #     config.front_end = "WebGpu"
+  #     config.font_size = 15.0
+  #     config.font = wezterm.font "JetBrains Mono"
+  #     config.macos_window_background_blur = 30
+  #     config.window_background_opacity = 1
+  #     config.window_decorations = 'RESIZE'
+  #     config.audible_bell = "Disabled"
+  #     config.keys = {
+  #       {
+  #         key = 'LeftArrow',
+  #         mods = 'OPT',
+  #         action = wezterm.action.SendKey { key = 'b', mods = 'ALT' }
+  #       },
+  #       {
+  #         key = 'RightArrow',
+  #         mods = 'OPT',
+  #         action = wezterm.action.SendKey { key = 'f', mods = 'ALT' }
+  #       }
+  #     }
 
-      return config
-    '';
-  };
+  #     return config
+  #   '';
+  # };
 
   programs.skim.enable = true;
 
+  programs.bash.shellAliases = config.home.shellAliases;
+
   programs.zsh = {
+    shellAliases = config.home.shellAliases;
     enable = true;
     initExtra = ''
       # Add any additional configurations here
-      export PATH=/run/current-system/sw/bin:$HOME/.nix-profile/bin:$PATH
+      
+      export PATH=/run/current-system/sw/bin:$HOME/.nix-profile/bin:$HOME/.dotnet/tools:$PATH
       if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
       fi

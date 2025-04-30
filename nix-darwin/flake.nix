@@ -52,24 +52,30 @@
           pkgs.vim
           pkgs.k9s
           pkgs.kubectx
-          pkgs.vscode
+          #pkgs.vscode
+          #(pkgs.vscode.override { isInsiders = true; })
           pkgs.jetbrains.rider
           pkgs.jetbrains.datagrip
           pkgs.jetbrains.gateway
-          pkgs.wezterm
+          #pkgs.wezterm
           pkgs.kubectl
           pkgs.kubeswitch
           pkgs.kubelogin
           pkgs.kubelogin-oidc
           (pkgs.azure-cli.withExtensions [ pkgs.azure-cli.extensions.aks-preview ])
           pkgs.nerd-fonts.jetbrains-mono
+          pkgs.lazydocker
+          pkgs.tailscale
+          #pkgs.zulu8
           #pkgs.flameshot
           # pkgs.dotnetCorePackages.sdk_6_0_1xx
           # pkgs.dotnetCorePackages.dotnet_8.sdk
           # pkgs.dotnetCorePackages.dotnet_9.sdk
-#          pkgs.direnv
-#          pkgs.sshs
-#          pkgs.glow
+          # pkgs.direnv
+          # pkgs.sshs
+          # pkgs.glow
+          pkgs.psqlodbc
+          pkgs.raycast
         ];
       # system.activationScripts.applications.text = let
       #   env = pkgs.buildEnv {
@@ -91,14 +97,13 @@
       #     done
       #   '';
 
-      services.nix-daemon.enable = true;
+      #services.nix-daemon.enable = true;
       nix.settings.experimental-features = "nix-command flakes";
       programs.zsh.enable = true;  # default shell on catalina
       system.configurationRevision = self.rev or self.dirtyRev or null;
       system.stateVersion = 4;
       nixpkgs.hostPlatform = "aarch64-darwin";
-      security.pam.enableSudoTouchIdAuth = true;
-
+      security.pam.services.sudo_local.touchIdAuth = true;
       #fonts.fontconfig.enable = true;
       fonts.packages = with pkgs; [
         nerd-fonts.jetbrains-mono
@@ -113,8 +118,8 @@
 
       home-manager.backupFileExtension = "backup";
       ids.gids.nixbld = 350;
-      nix.configureBuildUsers = true;
-      nix.useDaemon = true;
+      #nix.configureBuildUsers = true;
+      #nix.useDaemon = true;
 
       system.defaults = {
         alf.globalstate = 1;
@@ -166,7 +171,7 @@
           "discord"
           "fork"
           "autodesk-fusion"
-          "openwebstart"
+          #"openwebstart"
           "zoom"
           "betterdisplay"
           "royal-tsx"
@@ -175,6 +180,20 @@
           "adobe-acrobat-pro"
           "netspot"
           "balenaetcher"
+          "ghostty"
+          "plex"
+          "caffeine"
+          "jordanbaird-ice"
+          #"openjdk@8"
+          "loupedeck"
+          "mutedeck"
+          "insta360-studio"
+          "viscosity"
+          "visual-studio-code@insiders"
+          "raspberry-pi-imager"
+          "bruno"
+          "folx"
+          "inkscape"
         ];
         brews = [
           "mas"
@@ -185,6 +204,7 @@
           Whatsapp = 310633997;
           BlackmagicDiskSpeedTest = 425264550;
           FileZillaPro = 1298486723;
+          Perplexity = 6714467650;
         };
       };
     };
