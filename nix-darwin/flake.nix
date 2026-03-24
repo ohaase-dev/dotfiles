@@ -2,44 +2,29 @@
   description = "My Darwin system flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
+    nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     mac-app-util.url = "github:hraban/mac-app-util";
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
-    # Optional: Declarative tap management
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
-    };
-    homebrew-dotnet-sdks = {
-      url = "github:isen-ng/homebrew-dotnet-sdk-versions";
-      flake = false;
-    };
-    homebrew-ohtap = {
-      url = "github:ohaase-dev/homebrew-ohtap";
-      flake = false;
-    };
+    # NEW: a nixpkgs revision where inetutils is 2.6 and builds
+    nixpkgs-inetutils-2-6.url =
+    "github:NixOS/nixpkgs/a1bab9e494f5f4939442a57a58d0449a109593fe";
   };
-
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, mac-app-util, nix-homebrew, homebrew-core,  homebrew-cask, homebrew-bundle, homebrew-dotnet-sdks, homebrew-ohtap }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, mac-app-util, nixpkgs-inetutils-2-6 }:
   let
+    system = "aarch64-darwin";  # or "x86_64-darwin"
+    # NEW: packages from the legacy nixpkgs revision
+    pkgsInetutils26 = import nixpkgs-inetutils-2-6 { inherit system; };
+    
     configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;
+
 
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
@@ -65,17 +50,22 @@
           (pkgs.azure-cli.withExtensions [ pkgs.azure-cli.extensions.aks-preview ])
           pkgs.nerd-fonts.jetbrains-mono
           pkgs.lazydocker
-          pkgs.tailscale
+          #pkgs.tailscale
           #pkgs.zulu8
           #pkgs.flameshot
-          # pkgs.dotnetCorePackages.sdk_6_0_1xx
-          # pkgs.dotnetCorePackages.dotnet_8.sdk
-          # pkgs.dotnetCorePackages.dotnet_9.sdk
           # pkgs.direnv
           # pkgs.sshs
           # pkgs.glow
           pkgs.psqlodbc
           pkgs.raycast
+          pkgs.swaks
+          pkgs.inetutils
+          pkgs.ddev
+          pkgs.nmap
+          pkgs.powershell
+          pkgs.rclone
+          pkgs.azure-storage-azcopy
+          pkgs.restic
         ];
       # system.activationScripts.applications.text = let
       #   env = pkgs.buildEnv {
@@ -96,12 +86,11 @@
       #       ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
       #     done
       #   '';
-
-      #services.nix-daemon.enable = true;
       nix.settings.experimental-features = "nix-command flakes";
       programs.zsh.enable = true;  # default shell on catalina
       system.configurationRevision = self.rev or self.dirtyRev or null;
       system.stateVersion = 4;
+      system.primaryUser = "olafhaase";
       nixpkgs.hostPlatform = "aarch64-darwin";
       security.pam.services.sudo_local.touchIdAuth = true;
       #fonts.fontconfig.enable = true;
@@ -112,7 +101,7 @@
 
       users.users.olafhaase ={
           home = "/Users/olafhaase";
-          shell = pkgs.nushell;
+          #shell = pkgs.nushell;
       };
 
 
@@ -121,8 +110,15 @@
       #nix.configureBuildUsers = true;
       #nix.useDaemon = true;
 
+      #networking.applicationFirewall = {
+      #  enable = true;
+      #  allowSigned = true;
+      #  allowSignedApp = true;
+      #  blockAllIncoming = false;
+      #  enableStealthMode = false;
+      #};
+
       system.defaults = {
-        alf.globalstate = 1;
         dock = {
           autohide = true;
           mru-spaces = false;
@@ -145,128 +141,35 @@
         screencapture.location = "~/Pictures/screenshots";
         #screensaver.askForPasswordDelay = 10;
       };
-
-      # Homebrew needs to be installed on its own!
-      homebrew = {
-        enable = true;
-        casks = [
-          "intune-company-portal"
-          "microsoft-edge"
-          "microsoft-teams"
-          "microsoft-office"
-          "1password"
-          "1password-cli"
-          "obsidian"
-          "orbstack"
-          "dotnet-sdk9"
-          "dotnet-sdk8"
-          "dotnet-sdk6"
-          "switchbar"
-          "omnidisksweeper"
-          "commander-one"
-          "twingate"
-          "orcaslicer"
-          "maczip"
-          "brave-browser"
-          "discord"
-          "fork"
-          "autodesk-fusion"
-          #"openwebstart"
-          "zoom"
-          "betterdisplay"
-          "royal-tsx"
-          "dbeaver-community"
-          "pgadmin4"
-          "adobe-acrobat-pro"
-          "netspot"
-          "balenaetcher"
-          "ghostty"
-          "plex"
-          "caffeine"
-          "jordanbaird-ice"
-          #"openjdk@8"
-          "loupedeck"
-          "mutedeck"
-          "insta360-studio"
-          "viscosity"
-          "visual-studio-code@insiders"
-          "raspberry-pi-imager"
-          "bruno"
-          "folx"
-          "inkscape"
-        ];
-        brews = [
-          "mas"
-        ];
-        masApps = {
-          OnePasswordSafari = 1569813296;
-          Greenshot = 1103915944;
-          Whatsapp = 310633997;
-          BlackmagicDiskSpeedTest = 425264550;
-          FileZillaPro = 1298486723;
-          Perplexity = 6714467650;
-        };
-      };
     };
   in
   {
-    darwinConfigurations."Olafs-MacBook-Air" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      modules = [ 
-	      configuration
-        mac-app-util.darwinModules.default
-        home-manager.darwinModules.home-manager {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.olafhaase = import ./home.nix;
-          # To enable it for all users:
-          home-manager.sharedModules = [
-            mac-app-util.homeManagerModules.default
-          ];
-        }
-      ];
-    };
-
     darwinConfigurations."BF00223" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       modules = [ 
 	      configuration
         mac-app-util.darwinModules.default
+
+        # NEW: overlay inetutils from the legacy package set
+        {
+          nixpkgs.overlays = [
+            (_final: _prev: {
+              inetutils = pkgsInetutils26.inetutils;
+            })
+          ];
+        }
+
         home-manager.darwinModules.home-manager {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.olafhaase = import ./home.nix;
+          home-manager.extraSpecialArgs = {
+            userHome = "/Users/olafhaase";
+          };
           # To enable it for all users:
           home-manager.sharedModules = [
             mac-app-util.homeManagerModules.default
           ];
-        }
-        nix-homebrew.darwinModules.nix-homebrew
-        {
-          nix-homebrew = {
-            # Install Homebrew under the default prefix
-            enable = true;
-
-            # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-            enableRosetta = true;
-
-            # User owning the Homebrew prefix
-            user = "olafhaase";
-
-            # Optional: Declarative tap management
-            taps = {
-              "homebrew/homebrew-core" = homebrew-core;
-              "homebrew/homebrew-cask" = homebrew-cask;
-              "homebrew/homebrew-bundle" = homebrew-bundle;
-              "isen-ng/homebrew-dotnet-sdks" =  homebrew-dotnet-sdks;
-              "ohaase-dev/homebrew-ohtap" =  homebrew-ohtap;
-            };
-
-            # Optional: Enable fully-declarative tap management
-            #
-            # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-            mutableTaps = false;
-          };
         }
       ];
     };

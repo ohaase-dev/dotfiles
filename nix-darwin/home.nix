@@ -1,63 +1,40 @@
 # home.nix
 # home-manager switch 
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, userHome, ... }:
 
 {
   home.username = "olafhaase";
   home.homeDirectory = "/Users/olafhaase";
-  home.stateVersion = "24.11"; # Please read the comment before changing.
+  home.stateVersion = "25.11"; # Please read the comment before changing.
 
 
 # Makes sense for user specific applications that shouldn't be available system-wide
-  home.packages = [
-          #pkgs.skim
-          #pkgs.wezterm
-          #pkgs.starship
-          #pkgs.nushellPlugins.query
-          #pkgs.nushellPlugins.skim
-  ];
+#  home.packages = [
+#  ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
-#    ".zshrc".source = ~/dotfiles/zshrc/.zshrc;
-#    ".config/wezterm".source = ~/dotfiles/wezterm;
-#    ".config/skhd".source = ~/dotfiles/skhd;
-     ".config/starship.toml".source = ~/src/priv/dotfiles/starship/starship.toml;
-#    ".config/zellij".source = ~/dotfiles/zellij;
-#    ".config/nvim".source = ~/dotfiles/nvim;
-#    ".config/nix".source = ~/dotfiles/nix;
-#    ".config/nix-darwin".source = ~/dotfiles/nix-darwin;
-#    ".config/tmux".source = ~/dotfiles/tmux;
-#    ".config/ghostty".source = ~/dotfiles/ghostty;
+     ".config/starship.toml".source = "${userHome}/src/priv/dotfiles/starship/starship.toml";
+     ".config/git/allowed_signers".source = "${userHome}/src/priv/dotfiles/git/allowed_signers";
   };
 
-  home.sessionVariables = {
-  };
+#  home.sessionVariables = {
+#  };
 
   home.sessionPath = [
+    "/opt/homebrew/bin"
+    "/opt/homebrew/sbin"
     "/run/current-system/sw/bin"
-      "$HOME/.nix-profile/bin"
-      "/usr/local/share/dotnet"
+    "$HOME/.nix-profile/bin"
+    "$HOME/.dotnet/tools"
+    "/usr/local/share/dotnet"
   ];
 
-  # # Need to create aliases because Launchbar doesn't look through symlinks.
-  # home.activation.link-apps = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-  #   new_nix_apps="${config.home.homeDirectory}/Applications/Nix"
-  #   rm -rf "$new_nix_apps"
-  #   mkdir -p "$new_nix_apps"
-  #   find -H -L "$genProfilePath/home-files/Applications" -name "*.app" -type d -print | while read -r app; do
-  #     real_app=$(readlink -f "$app")
-  #     app_name=$(basename "$app")
-  #     target_app="$new_nix_apps/$app_name"
-  #     echo "Alias '$real_app' to '$target_app'"
-  #     ${pkgs.mkalias}/bin/mkalias "$real_app" "$target_app"
-  #   done
-  # '';
 
   home.shellAliases = {
-    code = "code-insiders";
+    #code = "code-insiders";
     ll = "ls -alh";
   };
 
@@ -69,37 +46,6 @@
     # carapace.enableNushellIntegration = true;
   };
 
-  # programs.wezterm = {
-  #   enable = true;
-  #   enableZshIntegration = true;
-  #   extraConfig = ''
-  #     local wezterm = require 'wezterm'
-  #     local config = wezterm.config_builder()
-  #     config.color_scheme = "Catppuccin Mocha"
-  #     config.front_end = "WebGpu"
-  #     config.font_size = 15.0
-  #     config.font = wezterm.font "JetBrains Mono"
-  #     config.macos_window_background_blur = 30
-  #     config.window_background_opacity = 1
-  #     config.window_decorations = 'RESIZE'
-  #     config.audible_bell = "Disabled"
-  #     config.keys = {
-  #       {
-  #         key = 'LeftArrow',
-  #         mods = 'OPT',
-  #         action = wezterm.action.SendKey { key = 'b', mods = 'ALT' }
-  #       },
-  #       {
-  #         key = 'RightArrow',
-  #         mods = 'OPT',
-  #         action = wezterm.action.SendKey { key = 'f', mods = 'ALT' }
-  #       }
-  #     }
-
-  #     return config
-  #   '';
-  # };
-
   programs.skim.enable = true;
 
   programs.bash.shellAliases = config.home.shellAliases;
@@ -107,35 +53,30 @@
   programs.zsh = {
     shellAliases = config.home.shellAliases;
     enable = true;
-    initExtra = ''
+    initContent = ''
       # Add any additional configurations here
       
-      export PATH=/run/current-system/sw/bin:$HOME/.nix-profile/bin:$HOME/.dotnet/tools:$PATH
+      export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:/run/current-system/sw/bin:$HOME/.nix-profile/bin:$HOME/.dotnet/tools:$PATH
       if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
       fi
     '';
   };
+
   programs.starship = {
     enable = true;
-    # theme = "minimal";
-    # settings = {
-    #      add_newline = true;
-    #      character = { 
-    #      success_symbol = "[➜](bold green)";
-    #      error_symbol = "[➜](bold red)";
-    #    };
-    # };
   };
 
-    programs.git = {
-    enable = true;
-    userName  = "Olaf Haase";
-    userEmail = "olaf.haase@bob.ch";
-    extraConfig.credential.helper = "manager";
-    extraConfig.credential."https://dev.azure.com".usehttppath = "true";
-    extraConfig.credential."https://github.com".username = "ohaase-dev";
-    extraConfig.credential.credentialStore = "cache";
-  };
+  programs.git.settings = {
+  enable = true;
+  user.name  = "Olaf Haase";
+  user.email = "olaf.haase@bob.ch";
+  extraConfig.credential.helper = "manager";
+  extraConfig.credential."https://dev.azure.com".usehttppath = "true";
+  extraConfig.credential."https://github.com".username = "ohaase-dev";
+  extraConfig.credential.credentialStore = "cache";
+  extraConfig.credential."https://git.dn42.dev".provider = "generic";
+  extraConfig.gpg.ssh.allowedSignersFile = "${userHome}/.config/git/allowed_signers";
+};
 
 }
