@@ -32,8 +32,8 @@
         [ 
 #          pkgs.nushell
           # pkgs.gitFull
-          pkgs.git
-          pkgs.git-credential-manager
+          # pkgs.git
+          # pkgs.git-credential-manager
           pkgs.vim
           pkgs.k9s
           pkgs.kubectx

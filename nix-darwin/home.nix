@@ -2,7 +2,6 @@
 # home-manager switch 
 
 { config, pkgs, lib, userHome, ... }:
-
 {
   home.username = "olafhaase";
   home.homeDirectory = "/Users/olafhaase";
@@ -67,16 +66,21 @@
     enable = true;
   };
 
-  programs.git.settings = {
+  programs.git = {
   enable = true;
-  user.name  = "Olaf Haase";
-  user.email = "olaf.haase@bob.ch";
-  extraConfig.credential.helper = "manager";
-  extraConfig.credential."https://dev.azure.com".usehttppath = "true";
-  extraConfig.credential."https://github.com".username = "ohaase-dev";
-  extraConfig.credential.credentialStore = "cache";
-  extraConfig.credential."https://git.dn42.dev".provider = "generic";
-  extraConfig.gpg.ssh.allowedSignersFile = "${userHome}/.config/git/allowed_signers";
-};
-
+  settings = {
+    user = {
+      name  = "Olaf Haase";
+      email = "olaf.haase@bob.ch";
+    };
+    credential = {
+      helper = "manager";
+      credentialStore = "keychain";
+      "https://dev.azure.com".usehttppath = "true";
+      "https://github.com".username = "ohaase-dev";
+      "https://git.dn42.dev".provider = "generic";
+    };
+    gpg.ssh.allowedSignersFile = "${userHome}/.config/git/allowed_signers"; 
+    };
+  };
 }
