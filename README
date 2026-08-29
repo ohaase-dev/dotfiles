@@ -1,2 +1,6 @@
 
 # dotfiles
+
+darwin-rebuild switch --flake ~/src/priv/dotfiles/nix-darwin --impure
+
+sudo nix-collect-garbage -d
